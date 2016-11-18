@@ -1,0 +1,20 @@
+#!/usr/bin/bash
+SCRIPT_DIR=$( dirname "$(readlink -f "$0")" );
+PARENT_DIR=$( dirname "$SCRIPT_DIR" );
+UNIX_PATH=${PARENT_DIR//\\/\/};
+source "$PARENT_DIR/scripts/utils.sh";
+
+load_configuration
+
+if [[ -n "$1" ]]; then
+    BRANCH="$1"
+else
+    BRANCH=$(git rev-parse --abbrev-ref HEAD);
+fi
+
+PATTERN="$KEY-[0-9]+"
+if [[ "$BRANCH" =~ $PATTERN ]]; then
+    ISSUE=$(echo "$BRANCH" | sed -e "$SED_CLEAN")
+    ISSUE_URL="$URL/browse/$ISSUE"
+    xdg-open "$ISSUE_URL"
+fi

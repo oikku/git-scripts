@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+SCRIPT_DIR=$( dirname "$(readlink -f "$0")" );
+PARENT_DIR=$( dirname "$SCRIPT_DIR" );
+UNIX_PATH=${PARENT_DIR//\\/\/};
+source "$PARENT_DIR/scripts/utils.sh";
+
+load_configuration
+check_username
+
+read_password
+echo
+
+export URL
+export USER
+export PASSWORD
+export -f jira_status
+
+git log --grep="$GREP_PATTERN"  "$@" | parse_issues | \
+    xargs -P 4 -n1 -I{} bash -c 'printf "%s : %s\n" "{}" "$(jira_status "{}")"' | sort

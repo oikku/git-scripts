@@ -1,0 +1,21 @@
+[alias]
+    co = checkout
+    cpx = cherry-pick -x
+    up = log --pretty='format:%C(auto)%h %ai %Cgreen%<(15,trunc)%cn%Creset%C(auto) %d %s' --decorate @{u}..
+    mnc = merge --no-commit --no-ff
+    lso = log --oneline --decorate
+    ls = log --pretty='format:%C(auto)%h %ai %Cgreen%<(15,trunc)%an%Creset%C(auto) %d %s' --decorate
+    lsac = log --pretty='format:%C(auto)%h %ai %Cgreen%an : %cn%Creset%C(auto) %d %s' --decorate
+    lsc = log --pretty='format:%C(auto)%h %ai %Cgreen%<(15,trunc)%cn%Creset%C(auto) %d %s' --decorate
+    lsfp = log --pretty='format:%C(auto)%h %ai %Cgreen%<(15,trunc)%cn%Creset%C(auto) %d %s' --decorate --first-parent
+    lsp = log --pretty='format:%h %ai %<(15,trunc)%cn %d %s'
+    lsb = log --pretty='format:%C(auto)%h %ai %Cgreen%<(15,trunc)%cn%Creset%C(auto) %d %s' --decorate --first-parent --no-merges
+    lsnm = log --pretty='format:%C(auto)%h %ai %Cgreen%<(15,trunc)%cn%Creset%C(auto) %d %s' --decorate --no-merges
+    db = log --left-right --graph --cherry-mark --oneline --pretty='format:%C(auto)%h %ai %Cgreen%<(15,trunc)%cn%Creset%C(auto) %d %s' --decorate
+    dbb = log --left-right --graph --cherry-mark --oneline
+    lcro = log --oneline --cherry
+    graph = log --oneline --graph --decorate
+    sgraph = log --oneline --graph --decorate --simplify-by-decoration
+    rp = pull --rebase
+    fp = pull --ff
+    current = rev-parse --abbrev-ref HEAD

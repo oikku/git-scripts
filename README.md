@@ -11,3 +11,10 @@
     git config jira.url URL
     git config jira.username USERNAME
     ```
+
+# GitBash
+1. In your ~./gitconfig file use "windoux" style path for include
+```
+[include]
+    path = "~/git/git-scripts/git-alias"
+```

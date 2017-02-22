@@ -16,5 +16,5 @@
 1. In your ~./gitconfig file use "windoux" style path for include
 ```
 [include]
-    path = "~/git/git-scripts/git-alias"
+    path = "c:/path/to/your/git-repos/git-scripts/git-alias"
 ```

@@ -56,11 +56,11 @@ read_password () {
 jira_status() {
     if [[ -n "$PASSWORD" ]]; then
         stat=$( curl -k -s -u "$USER:$PASSWORD" -X GET -H 'Content-Type: application/json' "$URL/rest/api/2/issue/${1}?fields=status"; );
-        jq_cmd=$(which jq);
-        if [[ -z "$jq_cmd" ]]; then
-            stat=$( echo $stat | sed 's/.*,"name":"\([^"]*\)".*/\1/' );
-        else
+        jq_cmd=$(tmp="$(which jq)" && echo "$tmp");
+        if [[ -x "$jq_cmd" ]]; then
             stat=$( echo $stat | $jq_cmd '.fields.status.name' );
+        else
+            stat=$( echo $stat | sed 's/.*,"name":"\([^"]*\)".*/\1/' );
         fi
         echo "$stat";
     else

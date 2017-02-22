@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd -P)
+SCRIPT_DIR=$( cd "$( dirname "$( readlink -f "$0" )" )" && pwd -P);
 PARENT_DIR=$( dirname "$SCRIPT_DIR" );
 UNIX_PATH=${PARENT_DIR//\\/\/};
 source "$UNIX_PATH/scripts/utils.sh";

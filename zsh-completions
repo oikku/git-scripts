@@ -1,0 +1,17 @@
+#
+# Git completions for ZSH
+#
+zstyle ':completion:*:*:git:*' user-commands ${${(M)${(k)commands}:#git-*}/git-/}
+
+_git-jira-issues () {
+    _git-log
+}
+_git-jira-status () {
+    _git-jira-issues
+}
+_git-jira-summary () {
+    _git-jira-issues
+}
+_git-jira-url () {
+    _git-jira-issues
+}

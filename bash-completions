@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+_git_jira_issues () {
+    _git_log
+}
+_git_jira_status () {
+    _git_jira_issues
+}
+_git_jira_summary () {
+    _git_jira_issues
+}
+_git_jira_url () {
+    _git_jira_issues
+}

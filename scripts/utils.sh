@@ -60,7 +60,7 @@ jira_status() {
         if [[ -x "$jq_cmd" ]]; then
             stat=$( echo $stat | $jq_cmd '.fields.status.name' );
         else
-            stat=$( echo $stat | sed 's/.*,"name":"\([^"]*\)".*/\1/' );
+            stat=$( echo $stat | sed 's/","/"\n"/g' | grep "\"name\":" | sed 's/^.*"name":"\([^"]*\)".*/\1/' | awk '{print}' ORS=' || ' );
         fi
         echo "$stat";
     else

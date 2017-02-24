@@ -1,0 +1,42 @@
+#!/usr/bin/bash
+current_branch=$( git rev-parse --abbrev-ref HEAD )
+gerrit_remote_name=$( git config gerrit.remote.name )
+gerrit_review_path=$( git config gerrit.review.path | sed 's|/$||' )
+
+if [[ -z "$gerrit_remote_name" || -z "$gerrit_review_path" ]]; then
+    echo
+    echo "Gerrit remote name and review path must be configured first."
+    echo
+    echo "    git config gerrit.remote.name remote_name"
+    echo "    git config gerrit.review.path review_path"
+    echo
+    exit 1
+fi
+
+case "$current_branch" in
+    master)
+        echo "Current branch is master."
+        echo "You can create reviews only from feature branches"
+        ;;
+    *)
+        echo
+        echo "Commits to push to review:"
+        echo
+        git log --oneline master..
+        echo
+        echo -n "Do you want to create review from branch $current_branch? [y/n] "
+        read answer
+        case "$answer" in
+            y|Y)
+                echo "Update remotes..." && \
+                git remote update && \
+                echo "Push review to gerrit" && \
+                git push $gerrit_remote_name HEAD:$gerrit_review_path/$current_branch && \
+                echo "Review created/updated successfully"
+                ;;
+            *)
+                echo "No review created."
+                ;;
+        esac
+        ;;
+esac

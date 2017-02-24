@@ -1,0 +1,44 @@
+#!/usr/bin/bash
+current_branch=$( git rev-parse --abbrev-ref HEAD )
+gerrit_remote_name=$( git config gerrit.remote.name )
+
+if [[ -z "$gerrit_remote_name" ]]; then
+    echo
+    echo "Gerrit remote name must be configured first."
+    echo
+    echo "    git config gerrit.remote.name remote_name"
+    echo
+    exit 1
+fi
+
+case "$current_branch" in
+    master)
+        echo "Current branch is master. Nothing to do"
+        ;;
+    *)
+        echo
+        echo "Commits to rebase to master:"
+        echo
+        git log --oneline master..
+        echo
+        echo -n "Do you want to rebase brach $current_branch to master? [y/n] "
+        read answer
+        case "$answer" in
+            y|Y)
+                echo "Update remotes..."
+                git remote update && \
+                echo "Rebase to origin/master" && \
+                git rebase origin/master && \
+                echo "Push to origin/master" && \
+                git push origin HEAD:master && \
+                echo "Push to $gerrit_remote_name/master" && \
+                git push $gerrit_remote_name HEAD:master && \
+                echo "Review successfully rebased to master"
+                ;;
+            *)
+                echo "Aborted."
+                ;;
+        esac
+        ;;
+esac
+

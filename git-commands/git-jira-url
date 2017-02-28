@@ -6,4 +6,5 @@ source "$UNIX_PATH/scripts/utils.sh";
 
 load_configuration
 
+URL=$( echo "$URL" | sed 's|/$||');
 git log --grep="$GREP_PATTERN"  "$@" | parse_issues | xargs -n1 -I{} echo "$URL/browse/{}"

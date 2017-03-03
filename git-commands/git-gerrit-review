@@ -1,14 +1,14 @@
 #!/usr/bin/bash
 current_branch=$( git rev-parse --abbrev-ref HEAD )
-gerrit_remote_name=$( git config gerrit.remote.name )
-gerrit_review_path=$( git config gerrit.review.path | sed 's|/$||' )
+gerrit_remote_name=$( git config git-scripts.gerrit.remote.name )
+gerrit_review_path=$( git config git-scripts.gerrit.review.path | sed 's|/$||' )
 
 if [[ -z "$gerrit_remote_name" || -z "$gerrit_review_path" ]]; then
     echo
     echo "Gerrit remote name and review path must be configured first."
     echo
-    echo "    git config gerrit.remote.name remote_name"
-    echo "    git config gerrit.review.path review_path"
+    echo "    git config git-scripts.gerrit.remote.name remote_name"
+    echo "    git config git-scripts.gerrit.review.path review_path"
     echo
     exit 1
 fi

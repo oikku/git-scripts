@@ -21,7 +21,7 @@ print_previous () {
 
 read_git_configuration
 
-echo "JIRA URL and key are mandatory"
+echo "JIRA URL and project ID are mandatory"
 echo
 echo "If you don't want to save password into configuration"
 echo "you can leave it empty and script will ask it when"
@@ -39,14 +39,14 @@ fi
 
 check_required $URL "JIRA URL is mandatory"
 
-print_previous "$KEY" "Current JIRA key is"
-echo "Set JIRA key to "
+print_previous "$PROJECT_ID" "Current JIRA project ID is"
+echo "Set JIRA project ID to "
 read TMP_KEY
 
 if [[ -n "$TMP_KEY" ]]; then
     KEY="$TMP_KEY"
 fi
-check_required $KEY "JIRA key is mandatory"
+check_required $PROJECT_ID "JIRA project ID is mandatory"
 
 print_previous "$USER" "Current JIRA username is"
 echo "Set JIRA username to "
@@ -67,14 +67,14 @@ echo
 echo "Set JIRA password. Empty value is ignored."
 read -s PASSWORD
 
-git config jira.key "$KEY"
-git config jira.url "$URL"
+git config git-scripts.jira.project.id "$PROJECT_ID"
+git config git-scripts.jira.url "$URL"
 
 if [[ -n "$USER" ]]; then
-    git config jira.username "$USER"
+    git config git-scripts.jira.username "$USER"
 fi
 
 if [[ -n "$PASSWORD" ]]; then
-    git config jira.password "$PASSWORD"
+    git config git-scripts.jira.password "$PASSWORD"
 fi
 

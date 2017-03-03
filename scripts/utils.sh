@@ -1,26 +1,26 @@
 #!/usr/bin/bash
 
 read_git_configuration () {
-    KEY=$(git config jira.key);
-    URL=$(git config jira.url);
-    USER=$(git config jira.username);
+    PROJECT_ID=$(git config git-scripts.jira.project.id);
+    URL=$(git config git-scripts.jira.url);
+    USER=$(git config git-scripts.jira.username);
 }
 
 load_configuration () {
     read_git_configuration
-    if [[ -z "$KEY" || -z "$URL" ]]; then
-        echo "JIRA key or URL is not configured."
+    if [[ -z "$PROJECT_ID" || -z "$URL" ]]; then
+        echo "JIRA project ID or URL is not configured."
         echo
-        echo "    git config jira.key KEY"
-        echo "    git config jira.url URL"
+        echo "    git config git-scripts.jira.project.id PROJECT_ID"
+        echo "    git config git-scripts.jira.url URL"
         echo
         exit 1
     fi
    
-    SHELL_PATTERN="$KEY-[0-9]+" 
-    GREP_PATTERN="$KEY-[0-9]\+"
-    SED_SPLIT="s/\($KEY-[0-9]\+\)/\1\n/g" 
-    SED_CLEAN="s/.*\($KEY-[0-9]\+\).*/\1/g"
+    SHELL_PATTERN="$PROJECT_ID-[0-9]+" 
+    GREP_PATTERN="$PROJECT_ID-[0-9]\+"
+    SED_SPLIT="s/\($PROJECT_ID-[0-9]\+\)/\1\n/g" 
+    SED_CLEAN="s/.*\($PROJECT_ID-[0-9]\+\).*/\1/g"
 }
 
 current_branch_name () {
@@ -31,7 +31,7 @@ check_username () {
     if [[ -z "$USER" ]]; then
         echo "JIRA username is not configured."
         echo
-        echo "    git config jira.username USERNAME"
+        echo "    git config git-scripts.jira.username USERNAME"
         echo
         exit 1
     fi
@@ -42,7 +42,7 @@ parse_issues () {
 }
 
 read_password () {
-    PASSWORD=$(git config jira.password);
+    PASSWORD=$(git config git-scripts.jira.password);
     if [[ -z "$PASSWORD" ]]; then
         echo -n "Give JIRA password: ";
         stty_orig=$(stty -g);

@@ -1,12 +1,12 @@
 #!/usr/bin/bash
 current_branch=$( git rev-parse --abbrev-ref HEAD )
-gerrit_remote_name=$( git config gerrit.remote.name )
+gerrit_remote_name=$( git config git-scripts.gerrit.remote.name )
 
 if [[ -z "$gerrit_remote_name" ]]; then
     echo
     echo "Gerrit remote name must be configured first."
     echo
-    echo "    git config gerrit.remote.name remote_name"
+    echo "    git config git-scripts.gerrit.remote.name remote_name"
     echo
     exit 1
 fi

@@ -12,7 +12,7 @@ else
     BRANCH=$(git rev-parse --abbrev-ref HEAD);
 fi
 
-PATTERN="$KEY-[0-9]+"
+PATTERN="$PROJECT_ID-[0-9]+"
 if [[ "$BRANCH" =~ $PATTERN ]]; then
     ISSUE=$(echo "$BRANCH" | sed -e "$SED_CLEAN")
     ISSUE_URL="$URL/browse/$ISSUE"

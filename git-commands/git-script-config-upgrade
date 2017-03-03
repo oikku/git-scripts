@@ -1,0 +1,23 @@
+#!/usr/bin/bash
+declare -a OLD_KEYS;
+OLD_KEYS=( jira.key jira.url jira.username jira.password gerrit.remote.name gerrit.review.path );
+NEW_KEYS=( jira.project.id jira.url jira.username jira.password gerrit.remote.name gerrit.review.path );
+
+length=${#OLD_KEYS[*]};
+new_length=${#NEW_KEYS[*]};
+
+if [[ "$length" -ne "$new_length" ]]; then
+    echo "Key arrays don't match.";
+    echo "Fix the script and run again."
+    exit 1
+fi
+
+for (( i=0; i<=$(( $length -1 )); i++ ))
+do
+    key="${OLD_KEYS[$i]}"
+    value=$(git config $key);
+    if [[ -n "$value" ]]; then
+        git config "git-scripts.${NEW_KEYS[$i]}" "$value"
+    fi
+    git config --unset $key
+done

@@ -1,10 +1,13 @@
 #!/usr/bin/bash
 
-load_configuration () {
+read_git_configuration () {
     KEY=$(git config jira.key);
     URL=$(git config jira.url);
     USER=$(git config jira.username);
-    
+}
+
+load_configuration () {
+    read_git_configuration
     if [[ -z "$KEY" || -z "$URL" ]]; then
         echo "JIRA key or URL is not configured."
         echo
@@ -41,19 +44,37 @@ parse_issues () {
 read_password () {
     PASSWORD=$(git config jira.password);
     if [[ -z "$PASSWORD" ]]; then
-        read -s -e -p "Give JIRA password: " PASSWORD
+        echo -n "Give JIRA password: ";
+        stty_orig=$(stty -g);
+        stty -echo;
+        read PASSWORD;
+        stty $stty_orig;
+        echo;
     fi
 }
 
 jira_status() {
-    stat=$( curl -k -s -u "$USER:$PASSWORD" -X GET -H 'Content-Type: application/json' "$URL/rest/api/2/issue/${1}?fields=status"; );
-	stat=$( echo $stat | sed 's/.*,"name":"\([^"]*\)".*/\1/' );
-	echo "$stat";
+    if [[ -n "$PASSWORD" ]]; then
+        stat=$( curl -k -s -u "$USER:$PASSWORD" -X GET -H 'Content-Type: application/json' "$URL/rest/api/2/issue/${1}?fields=status"; );
+        jq_cmd=$(which jq);
+        if [[ -z "$jq_cmd" ]]; then
+            stat=$( echo $stat | sed 's/.*,"name":"\([^"]*\)".*/\1/' );
+        else
+            stat=$( echo $stat | $jq_cmd '.fields.status.name' );
+        fi
+        echo "$stat";
+    else
+        echo "NO CREDENTIALS GIVEN"
+    fi
 }
 
 jira_summary() {
-	stat=$( curl -k -s -u "$USER:$PASSWORD" -X GET -H 'Content-Type: application/json' "$URL/rest/api/2/issue/${1}?fields=summary"; );
-	stat=$( echo $stat | sed 's/.*{"summary":"\(.*\)"}}.*/\1/' );
-	stat=$( echo $stat | sed 's/\\"/"/g' );
-	echo "$stat";
+    if [[ -n "$PASSWORD" ]]; then
+        stat=$( curl -k -s -u "$USER:$PASSWORD" -X GET -H 'Content-Type: application/json' "$URL/rest/api/2/issue/${1}?fields=summary"; );
+        stat=$( echo $stat | sed 's/.*{"summary":"\(.*\)"}}.*/\1/' );
+        stat=$( echo $stat | sed 's/\\"/"/g' );
+        echo "$stat";
+    else
+        echo "NO CREDENTIALS GIVEN"
+    fi
 }

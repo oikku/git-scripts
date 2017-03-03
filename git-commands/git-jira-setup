@@ -1,0 +1,80 @@
+#!/usr/bin/bash
+SCRIPT_DIR=$( dirname "$(readlink -f "$0")" );
+PARENT_DIR=$( dirname "$SCRIPT_DIR" );
+UNIX_PATH=${PARENT_DIR//\\/\/};
+source "$PARENT_DIR/scripts/utils.sh";
+
+check_required () {
+    if [[ -z "$1" ]]; then
+        echo
+        echo "$2"
+        echo
+        exit 1
+    fi
+}
+
+print_previous () {
+    if [[ -n "$1" ]]; then
+        echo "$2 $1"
+    fi
+}
+
+read_git_configuration
+
+echo "JIRA URL and key are mandatory"
+echo
+echo "If you don't want to save password into configuration"
+echo "you can leave it empty and script will ask it when"
+echo "it is needed."
+echo
+echo "Empty values doesn't override previous values if exists."
+
+print_previous "$URL" "Current JIRA URL is"
+echo "Set JIRA URL to "
+read TMP_URL
+
+if [[ -n "$TMP_URL" ]]; then
+    URL="$TMP_URL"
+fi
+
+check_required $URL "JIRA URL is mandatory"
+
+print_previous "$KEY" "Current JIRA key is"
+echo "Set JIRA key to "
+read TMP_KEY
+
+if [[ -n "$TMP_KEY" ]]; then
+    KEY="$TMP_KEY"
+fi
+check_required $KEY "JIRA key is mandatory"
+
+print_previous "$USER" "Current JIRA username is"
+echo "Set JIRA username to "
+read TMP_USER
+if [[ -n "$TMP_USER" ]]; then
+    USER="$TMP_USER"
+fi
+
+echo
+echo "Give password for JIRA user or leave empty"
+echo "and script will ask it when needed."
+echo
+echo "WARNING!!!"
+echo 
+echo "Password will be saved as plain text into git config if given."
+echo
+
+echo "Set JIRA password. Empty value is ignored."
+read -s PASSWORD
+
+git config jira.key "$KEY"
+git config jira.url "$URL"
+
+if [[ -n "$USER" ]]; then
+    git config jira.username "$USER"
+fi
+
+if [[ -n "$PASSWORD" ]]; then
+    git config jira.password "$PASSWORD"
+fi
+

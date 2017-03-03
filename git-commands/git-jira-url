@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+SCRIPT_DIR=$( dirname "$(readlink -f "$0")" );
+PARENT_DIR=$( dirname "$SCRIPT_DIR" );
+UNIX_PATH=${PARENT_DIR//\\/\/};
+source "$UNIX_PATH/scripts/utils.sh";
+
+load_configuration
+
+git log --grep="$GREP_PATTERN"  "$@" | parse_issues | xargs -n1 -I{} echo "$URL/browse/{}"

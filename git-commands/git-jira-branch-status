@@ -1,0 +1,32 @@
+#!/usr/bin/bash
+SCRIPT_DIR=$( cd "$( dirname "$( readlink -f "$0" )" )" && pwd -P);
+PARENT_DIR=$( dirname "$SCRIPT_DIR" );
+UNIX_PATH=${PARENT_DIR//\\/\/};
+source "$UNIX_PATH/scripts/utils.sh";
+
+load_configuration
+check_username
+
+read_password
+echo
+
+export SED_CLEAN
+export URL
+export USER
+export PASSWORD
+export -f jira_status
+
+branch_jira_status () {
+    branch="$1";
+    PATTERN="$PROJECT_ID-[0-9]+"
+    if [[ "$branch" =~ $PATTERN ]]; then
+        ISSUE=$(echo "$branch" | sed -e "$SED_CLEAN");
+        STATUS=$( jira_status "$ISSUE" );
+        echo " $branch : $STATUS";
+        #jira_status "$ISSUE"
+    fi
+}
+export -f branch_jira_status
+
+git branch "$@" | \
+    xargs -P 4 -n1 -I{} bash -c 'branch_jira_status "{}"' | sort

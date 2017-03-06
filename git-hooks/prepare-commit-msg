@@ -6,14 +6,17 @@ source "$UNIX_PATH/scripts/utils.sh";
 
 load_configuration
 
-BRANCH=$( current_branch_name | parse_issues )
+BRANCH_ISSUE=$( current_branch_name | parse_issues )
 
-if [[ $BRANCH =~ $SHELL_PATTERN ]]; then
+if [[ $BRANCH_ISSUE =~ $SHELL_PATTERN ]]; then
     case ":$2" in
         :|:message|:template)
-            echo -n "${BRANCH}: " > "$1.tmp"
-            cat "$1" >> "$1.tmp"
-            mv "$1.tmp" "$1"
+            cat "$1" | parse_issues | grep "$BRANCH_ISSUE" >/dev/null
+            if [[ "$?" -ne 0 ]]; then
+                echo -n "${BRANCH_ISSUE}: " > "$1.tmp"
+                cat "$1" >> "$1.tmp"
+                mv "$1.tmp" "$1"
+            fi
             ;;
         *) ;;
     esac

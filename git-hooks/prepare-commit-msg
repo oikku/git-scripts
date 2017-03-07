@@ -11,7 +11,7 @@ BRANCH_ISSUE=$( current_branch_name | parse_issues )
 if [[ $BRANCH_ISSUE =~ $SHELL_PATTERN ]]; then
     case ":$2" in
         :|:message|:template)
-            cat "$1" | parse_issues | grep "$BRANCH_ISSUE" >/dev/null
+            cat "$1" | sed 's/^#.*//g' | parse_issues | grep "$BRANCH_ISSUE" >/dev/null
             if [[ "$?" -ne 0 ]]; then
                 echo -n "${BRANCH_ISSUE}: " > "$1.tmp"
                 cat "$1" >> "$1.tmp"

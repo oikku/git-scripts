@@ -2,7 +2,7 @@
 
 read_git_configuration () {
     PROJECT_ID=$(git config git-scripts.jira.project.id);
-    URL=$(git config git-scripts.jira.url);
+    URL=$(git config git-scripts.jira.url | sed 's|/$||');
     USER=$(git config git-scripts.jira.username);
 }
 

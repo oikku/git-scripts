@@ -22,7 +22,7 @@ case "$current_branch" in
         echo
         echo "Commits to push to review:"
         echo
-        git log --oneline master..
+        git log --oneline origin/master..
         echo
         echo -n "Do you want to create review from branch $current_branch? [y/n] "
         read answer

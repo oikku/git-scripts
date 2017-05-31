@@ -1,0 +1,31 @@
+#!/usr/bin/bash
+current_branch=$( git rev-parse --abbrev-ref HEAD )
+gerrit_remote_name=$( git config git-scripts.gerrit.remote.name )
+
+if [[ -z "$gerrit_remote_name" ]]; then
+    echo
+    echo "Gerrit remote name must be configured first."
+    echo
+    echo "    git config git-scripts.gerrit.remote.name remote_name"
+    echo
+    exit 1
+fi
+
+case "$current_branch" in
+    master)
+        echo "Publish changes from master..."
+        echo "Update remotes..."
+        git remote update && \
+            echo "Fast forward to origin/master" && \
+            git pull --ff-only && \
+            echo "Push to origin/master" && \
+            git push origin HEAD:master && \
+            echo "Push to $gerrit_remote_name/master" && \
+            git push $gerrit_remote_name HEAD:master && \
+            echo "Changes successfully published to master"
+        ;;
+    *)
+        echo "Not in master. Nothing to do."
+        ;;
+esac
+

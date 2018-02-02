@@ -1,0 +1,22 @@
+#!/usr/bin/bash
+
+target="master";
+if [[ "$1" != "" ]]; then
+    target="$1";
+fi
+
+if [[ -t 1 ]]; then
+    output="terminal";
+else
+    output="non-terminal";
+fi
+
+SCRIPT_DIR=$( cd "$( dirname "$( readlink -f "$0" )" )" && pwd -P);
+( 
+    git for-each-ref refs/heads --merged="$target" --format='%(refname:short)';
+    echo "===="; 
+    git for-each-ref refs/heads --format='%(refname:short)';
+    echo "====";
+    git for-each-ref refs/heads --format='%(if)%(HEAD)%(then)* %(else)- %(end)%(refname:short) %(upstream:short) %(upstream:track,nobracket)'
+) | awk -v target="$target" -v output="$output" -f "$SCRIPT_DIR/merged-branches.awk"
+

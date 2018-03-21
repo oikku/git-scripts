@@ -1,0 +1,13 @@
+#!/bin/bash
+command -v dmenu >/dev/null 2>&1 || { echo >&2 "  dmenu required but not found!"; exit 1; }
+
+branch="$(git branch | dmenu -i -l 30)";
+branch="${branch//[* ]}";
+if [[ -z "$branch" ]]; then
+    echo
+    printf "  No branch selected. Current branch is: ";
+    git rev-parse --abbrev-ref HEAD
+    echo
+else
+    git checkout "${branch//[* ]}";
+fi

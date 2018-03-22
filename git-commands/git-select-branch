@@ -1,13 +1,21 @@
 #!/bin/bash
-command -v dmenu >/dev/null 2>&1 || { echo >&2 "  dmenu required but not found!"; exit 1; }
+lines="25";
 
-branch="$(git branch | dmenu -i -l 30)";
-branch="${branch//[* ]}";
-if [[ -z "$branch" ]]; then
-    echo
-    printf "  No branch selected. Current branch is: ";
-    git rev-parse --abbrev-ref HEAD
-    echo
-else
-    git checkout "${branch//[* ]}";
+# rofi
+cmd="$(command -v rofi)";
+options="-dmenu -lines $lines";
+
+if [[ -z "$cmd" ]]; then
+    # dmenu if rofi not found
+    cmd="$(command -v dmenu)";
+    options="-i -l $lines"
 fi
+
+if [[ -z "$cmd" ]]; then
+    echo;
+    echo "   rofi or dmenu required";
+    echo;
+    exit 1;
+fi
+
+b="$(git branch | $cmd $options | sed 's/[ *]//g')"; [[ -n "$b" ]] && git checkout "$b";
